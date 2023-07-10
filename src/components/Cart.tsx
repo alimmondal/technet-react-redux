@@ -1,10 +1,10 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from './ui/sheet';
+  addToCart,
+  removeFromCart,
+  removeOne,
+} from '@/redux/features/cart/cartSlice';
+import { useAppDispatch, useAppSelector } from '@/redux/hook';
 import {
   HiMinus,
   HiOutlinePlus,
@@ -12,13 +12,21 @@ import {
   HiOutlineTrash,
 } from 'react-icons/hi';
 import { Button } from './ui/button';
-import { IProduct } from '@/types/globalTypes';
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from './ui/sheet';
 
 export default function Cart() {
-  //! Dummy data
+  const { products, total } = useAppSelector((state) => state.cart);
+  const dispatch = useAppDispatch();
 
-  const products: IProduct[] = [];
-  const total = 0;
+  // ! Dummy data
+  // const products: IProduct[] = [];
+  // const total = 0;
 
   //! **
 
@@ -44,23 +52,24 @@ export default function Cart() {
                 <img src={product?.image} alt="" className="h-full" />
               </div>
               <div className="px-2 w-full flex flex-col gap-3">
-                <h1 className="text-2xl self-center">{product?.name}</h1>
+                <h1 className="text-xl self-center">{product?.name}</h1>
                 <p>Quantity: {product.quantity}</p>
-                <p className="text-xl">
+                <p className="text-sm">
                   Total Price: {(product.price * product.quantity!).toFixed(2)}{' '}
                   $
                 </p>
               </div>
               <div className="border-l pl-5 flex flex-col justify-between">
-                <Button>
+                <Button onClick={() => dispatch(addToCart(product))}>
                   <HiOutlinePlus size="20" />
                 </Button>
-                <Button>
+                <Button onClick={() => dispatch(removeOne(product))}>
                   <HiMinus size="20" />
                 </Button>
                 <Button
                   variant="destructive"
                   className="bg-red-500 hover:bg-red-400"
+                  onClick={() => dispatch(removeFromCart(product))}
                 >
                   <HiOutlineTrash size="20" />
                 </Button>
